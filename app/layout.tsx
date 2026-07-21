@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://patch-32-signal.dream-well.chatgpt.site"),
   title: "PATCH//32 — Hold the signal",
   description:
     "A fast 32×32 strategy game about patching corruption before it consumes the neighborhood.",
