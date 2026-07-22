@@ -6,6 +6,8 @@ const SIZE = 32;
 const CELLS = SIZE * SIZE;
 const ROUND_SECONDS = 75;
 const PATCH_COST = 18;
+const SURGE_INTERVAL = 15;
+const SURGE_WARNING_SECONDS = 3;
 
 type GameStatus = "intro" | "playing" | "won" | "lost";
 type Pulse = { x: number; y: number; born: number; power: number };
@@ -35,6 +37,7 @@ export default function Home() {
   const cursorRef = useRef({ x: 16, y: 16 });
   const pulsesRef = useRef<Pulse[]>([]);
   const lastWaveRef = useRef(ROUND_SECONDS);
+  const lastSurgeWarningRef = useRef(0);
   const soundRef = useRef(true);
   const audioRef = useRef<AudioContext | null>(null);
 
@@ -109,6 +112,7 @@ export default function Home() {
     timeRef.current = ROUND_SECONDS;
     startRef.current = performance.now();
     lastWaveRef.current = ROUND_SECONDS;
+    lastSurgeWarningRef.current = 0;
     pulsesRef.current = [];
     cursorRef.current = { x: 16, y: 16 };
     statusRef.current = "playing";
@@ -212,7 +216,22 @@ export default function Home() {
       }
 
       const wholeSecond = Math.ceil(remaining);
-      if (wholeSecond > 0 && wholeSecond % 15 === 0 && lastWaveRef.current !== wholeSecond) {
+      const surgeCountdown = wholeSecond % SURGE_INTERVAL;
+      if (
+        wholeSecond > SURGE_INTERVAL &&
+        surgeCountdown > 0 &&
+        surgeCountdown <= SURGE_WARNING_SECONDS
+      ) {
+        setFlash(`EDGE SURGE IN ${surgeCountdown}`);
+        if (lastSurgeWarningRef.current !== wholeSecond) {
+          lastSurgeWarningRef.current = wholeSecond;
+          beep(180 + (SURGE_WARNING_SECONDS - surgeCountdown) * 70, 0.08);
+        }
+      } else if (
+        wholeSecond > 0 &&
+        wholeSecond % SURGE_INTERVAL === 0 &&
+        lastWaveRef.current !== wholeSecond
+      ) {
         lastWaveRef.current = wholeSecond;
         for (let i = 0; i < 14; i += 1) {
           const [x, y] = randomEdgeCell();

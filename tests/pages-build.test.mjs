@@ -10,3 +10,10 @@ test("builds a standalone GitHub Pages game", async () => {
   assert.match(html, /smart-window\.github\.io\/patch-32/);
   assert.doesNotMatch(html, /chatgpt\.site|codex-preview/i);
 });
+
+test("warns players before each edge surge", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /SURGE_WARNING_SECONDS = 3/);
+  assert.match(source, /EDGE SURGE IN \$\{surgeCountdown\}/);
+  assert.match(source, /lastSurgeWarningRef\.current !== wholeSecond/);
+});
