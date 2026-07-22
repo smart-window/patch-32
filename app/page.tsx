@@ -127,8 +127,12 @@ export default function Home() {
 
   const deployPatch = useCallback(
     (x: number, y: number) => {
-      if (statusRef.current !== "playing" || chargeRef.current < PATCH_COST)
+      if (statusRef.current !== "playing") return;
+      if (chargeRef.current < PATCH_COST) {
+        const missingCharge = Math.ceil(PATCH_COST - chargeRef.current);
+        setFlash(`RECHARGING · ${missingCharge} CHARGE TO GO`);
         return;
+      }
 
       const grid = gridRef.current;
       let repaired = 0;
@@ -502,7 +506,9 @@ export default function Home() {
             disabled={status !== "playing" || charge < PATCH_COST}
             onClick={() => deployPatch(cursorRef.current.x, cursorRef.current.y)}
           >
-            PATCH CURSOR
+            {status === "playing" && charge < PATCH_COST
+              ? `RECHARGING · ${PATCH_COST - charge} TO GO`
+              : "PATCH CURSOR"}
           </button>
         </aside>
       </section>

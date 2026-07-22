@@ -17,3 +17,9 @@ test("warns players before each edge surge", async () => {
   assert.match(source, /EDGE SURGE IN \$\{surgeCountdown\}/);
   assert.match(source, /lastSurgeWarningRef\.current !== wholeSecond/);
 });
+
+test("explains rejected low-charge patch attempts", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /RECHARGING · \$\{missingCharge\} CHARGE TO GO/);
+  assert.match(source, /RECHARGING · \$\{PATCH_COST - charge\} TO GO/);
+});
