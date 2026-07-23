@@ -5,7 +5,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const SIZE = 32;
 const CELLS = SIZE * SIZE;
 const ROUND_SECONDS = 75;
+const STARTING_CHARGE = 52;
 const PATCH_COST = 18;
+const PATCH_REFUND_CAP = 10;
+const CHARGE_REGEN_PER_SECOND = 3;
+const TICK_MS = 120;
 const SURGE_INTERVAL = 15;
 const SURGE_WARNING_SECONDS = 3;
 
@@ -31,7 +35,7 @@ export default function Home() {
   const gridRef = useRef(new Uint8Array(CELLS));
   const statusRef = useRef<GameStatus>("intro");
   const scoreRef = useRef(0);
-  const chargeRef = useRef(72);
+  const chargeRef = useRef(STARTING_CHARGE);
   const timeRef = useRef(ROUND_SECONDS);
   const startRef = useRef(0);
   const cursorRef = useRef({ x: 16, y: 16 });
@@ -43,7 +47,7 @@ export default function Home() {
 
   const [status, setStatus] = useState<GameStatus>("intro");
   const [score, setScore] = useState(0);
-  const [charge, setCharge] = useState(72);
+  const [charge, setCharge] = useState(STARTING_CHARGE);
   const [timeLeft, setTimeLeft] = useState(ROUND_SECONDS);
   const [integrity, setIntegrity] = useState(100);
   const [best, setBest] = useState(0);
@@ -108,7 +112,7 @@ export default function Home() {
     grid[indexOf(16, 16)] = 3;
     gridRef.current = grid;
     scoreRef.current = 0;
-    chargeRef.current = 72;
+    chargeRef.current = STARTING_CHARGE;
     timeRef.current = ROUND_SECONDS;
     startRef.current = performance.now();
     lastWaveRef.current = ROUND_SECONDS;
@@ -118,7 +122,7 @@ export default function Home() {
     statusRef.current = "playing";
     setStatus("playing");
     setScore(0);
-    setCharge(72);
+    setCharge(STARTING_CHARGE);
     setTimeLeft(ROUND_SECONDS);
     setIntegrity(93);
     setFlash("HOLD FOR 75 SECONDS");
@@ -156,7 +160,7 @@ export default function Home() {
       }
 
       chargeRef.current = clamp(
-        chargeRef.current - PATCH_COST + Math.min(repaired * 1.7, 24),
+        chargeRef.current - PATCH_COST + Math.min(repaired * 1.7, PATCH_REFUND_CAP),
         0,
         100,
       );
@@ -245,7 +249,11 @@ export default function Home() {
         beep(150, 0.16);
       }
 
-      chargeRef.current = clamp(chargeRef.current + 0.48, 0, 100);
+      chargeRef.current = clamp(
+        chargeRef.current + CHARGE_REGEN_PER_SECOND * (TICK_MS / 1000),
+        0,
+        100,
+      );
       const corruptedCount = grid.reduce(
         (total, cell) => total + (cell === 2 ? 1 : 0),
         0,
@@ -258,7 +266,7 @@ export default function Home() {
 
       if (remaining <= 0) finish("won");
       else if (nextIntegrity <= 28) finish("lost");
-    }, 120);
+    }, TICK_MS);
 
     return () => window.clearInterval(timer);
   }, [beep, finish]);
@@ -484,7 +492,9 @@ export default function Home() {
             <div className="meter-track">
               <i className="charge-fill" style={{ width: `${charge}%` }} />
             </div>
-            <p className="meter-note">EACH PATCH COSTS {PATCH_COST}. LARGE CHAINS REFUND ENERGY.</p>
+            <p className="meter-note">
+              EACH PATCH COSTS {PATCH_COST}. CHAINS REFUND UP TO {PATCH_REFUND_CAP}.
+            </p>
           </div>
 
           <div className="instructions">

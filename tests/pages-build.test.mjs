@@ -35,3 +35,16 @@ test("announces events without flooding screen readers with live metrics", async
   assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);
   assert.match(source, /className="status-line"[\s\S]*role="status"[\s\S]*aria-atomic="true"/);
 });
+
+test("keeps every patch energy-negative before passive regeneration", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const patchCost = Number(source.match(/const PATCH_COST = (\d+)/)?.[1]);
+  const refundCap = Number(source.match(/const PATCH_REFUND_CAP = (\d+)/)?.[1]);
+
+  assert.match(source, /const STARTING_CHARGE = 52/);
+  assert.match(source, /const CHARGE_REGEN_PER_SECOND = 3/);
+  assert.equal(patchCost, 18);
+  assert.equal(refundCap, 10);
+  assert.ok(refundCap < patchCost);
+  assert.match(source, /Math\.min\(repaired \* 1\.7, PATCH_REFUND_CAP\)/);
+});
