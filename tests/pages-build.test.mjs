@@ -29,3 +29,9 @@ test("does not award points for empty patches", async () => {
   assert.match(source, /scoreRef\.current \+= repaired > 0 \? 12 \+ combo : 0/);
   assert.match(source, /EMPTY PATCH · NO SCORE/);
 });
+
+test("announces events without flooding screen readers with live metrics", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);
+  assert.match(source, /className="status-line"[\s\S]*role="status"[\s\S]*aria-atomic="true"/);
+});

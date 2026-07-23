@@ -442,8 +442,13 @@ export default function Home() {
           </div>
         </div>
 
-        <aside className="control-panel" aria-live="polite">
-          <div className="status-line">
+        <aside className="control-panel">
+          <div
+            className="status-line"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             <span className={status === "playing" ? "live-dot" : "live-dot idle"} />
             {flash}
           </div>
