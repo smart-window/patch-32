@@ -43,6 +43,7 @@ export default function Home() {
   const pulsesRef = useRef<Pulse[]>([]);
   const lastWaveRef = useRef(ROUND_SECONDS);
   const lastSurgeWarningRef = useRef(0);
+  const firstPatchProtectedRef = useRef(true);
   const soundRef = useRef(true);
   const audioRef = useRef<AudioContext | null>(null);
 
@@ -118,6 +119,7 @@ export default function Home() {
     startRef.current = performance.now();
     lastWaveRef.current = ROUND_SECONDS;
     lastSurgeWarningRef.current = 0;
+    firstPatchProtectedRef.current = true;
     pulsesRef.current = [];
     cursorRef.current = { x: 16, y: 16 };
     statusRef.current = "playing";
@@ -142,6 +144,7 @@ export default function Home() {
       const grid = gridRef.current;
       let repaired = 0;
       const radius = chargeRef.current > 72 ? 3 : 2;
+      const targets: number[] = [];
       for (let dy = -radius; dy <= radius; dy += 1) {
         for (let dx = -radius; dx <= radius; dx += 1) {
           const nx = x + dx;
@@ -155,9 +158,20 @@ export default function Home() {
           )
             continue;
           const idx = indexOf(nx, ny);
+          targets.push(idx);
           if (grid[idx] === 2) repaired += 1;
-          if (grid[idx] !== 3) grid[idx] = 1;
         }
+      }
+
+      if (firstPatchProtectedRef.current && repaired === 0) {
+        firstPatchProtectedRef.current = false;
+        setFlash("FIRST PATCH BLOCKED · AIM AT RED");
+        beep(210);
+        return;
+      }
+      firstPatchProtectedRef.current = false;
+      for (const idx of targets) {
+        if (grid[idx] !== 3) grid[idx] = 1;
       }
 
       chargeRef.current = clamp(

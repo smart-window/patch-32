@@ -30,6 +30,17 @@ test("does not award points for empty patches", async () => {
   assert.match(source, /EMPTY PATCH · NO SCORE/);
 });
 
+test("protects newcomers from one empty first patch", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /firstPatchProtectedRef\.current = true/);
+  assert.match(source, /firstPatchProtectedRef\.current && repaired === 0/);
+  assert.match(source, /FIRST PATCH BLOCKED · AIM AT RED/);
+  assert.match(
+    source,
+    /FIRST PATCH BLOCKED · AIM AT RED[\s\S]*return;[\s\S]*chargeRef\.current = clamp/,
+  );
+});
+
 test("announces events without flooding screen readers with live metrics", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);
