@@ -161,7 +161,7 @@ export default function Home() {
         100,
       );
       const combo = repaired >= 8 ? repaired * 8 : repaired * 4;
-      scoreRef.current += 12 + combo;
+      scoreRef.current += repaired > 0 ? 12 + combo : 0;
       pulsesRef.current.push({ x, y, born: performance.now(), power: repaired });
       setCharge(Math.round(chargeRef.current));
       setScore(scoreRef.current);
@@ -170,7 +170,7 @@ export default function Home() {
           ? `CHAIN PATCH ×${repaired}`
           : repaired > 0
             ? `REPAIRED ${repaired}`
-            : "EMPTY PATCH",
+            : "EMPTY PATCH · NO SCORE",
       );
       beep(repaired >= 8 ? 620 : repaired > 0 ? 460 : 180);
     },

@@ -23,3 +23,9 @@ test("explains rejected low-charge patch attempts", async () => {
   assert.match(source, /RECHARGING · \$\{missingCharge\} CHARGE TO GO/);
   assert.match(source, /RECHARGING · \$\{PATCH_COST - charge\} TO GO/);
 });
+
+test("does not award points for empty patches", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /scoreRef\.current \+= repaired > 0 \? 12 \+ combo : 0/);
+  assert.match(source, /EMPTY PATCH · NO SCORE/);
+});
