@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const SIZE = 32;
 const CELLS = SIZE * SIZE;
 const ROUND_SECONDS = 75;
+const LOSS_THRESHOLD = 48;
 const STARTING_CHARGE = 52;
 const PATCH_COST = 18;
 const PATCH_REFUND_CAP = 10;
@@ -265,7 +266,7 @@ export default function Home() {
       setScore(scoreRef.current);
 
       if (remaining <= 0) finish("won");
-      else if (nextIntegrity <= 28) finish("lost");
+      else if (nextIntegrity <= LOSS_THRESHOLD) finish("lost");
     }, TICK_MS);
 
     return () => window.clearInterval(timer);
@@ -437,7 +438,7 @@ export default function Home() {
                       ? "Corruption spreads from every edge. Patch clusters, recycle the energy, and keep this 32×32 neighborhood online for 75 seconds."
                       : status === "won"
                         ? `You kept the neighborhood alive. Final score: ${score.toLocaleString()}.`
-                        : `The signal fell below 28% integrity. Final score: ${score.toLocaleString()}.`}
+                        : `The signal fell below ${LOSS_THRESHOLD}% integrity. Final score: ${score.toLocaleString()}.`}
                   </p>
                   <button className="primary-button" type="button" onClick={startGame}>
                     {status === "intro" ? "START PATCHING" : "RUN IT BACK"}
@@ -510,7 +511,9 @@ export default function Home() {
               </li>
               <li>
                 <b>03</b>
-                <span>Keep integrity above 28% until the timer reaches zero.</span>
+                <span>
+                  Keep integrity above {LOSS_THRESHOLD}% until the timer reaches zero.
+                </span>
               </li>
             </ol>
           </div>

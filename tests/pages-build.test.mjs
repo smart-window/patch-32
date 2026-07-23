@@ -48,3 +48,10 @@ test("keeps every patch energy-negative before passive regeneration", async () =
   assert.ok(refundCap < patchCost);
   assert.match(source, /Math\.min\(repaired \* 1\.7, PATCH_REFUND_CAP\)/);
 });
+
+test("uses the isolated 48 percent loss-threshold experiment", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /const LOSS_THRESHOLD = 48/);
+  assert.match(source, /nextIntegrity <= LOSS_THRESHOLD/);
+  assert.doesNotMatch(source, /below 28%|above 28%|nextIntegrity <= 28/);
+});
