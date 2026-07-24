@@ -13,6 +13,7 @@ const CHARGE_REGEN_PER_SECOND = 3;
 const TICK_MS = 120;
 const SURGE_INTERVAL = 15;
 const SURGE_WARNING_SECONDS = 3;
+const START_CURSOR = { x: 8, y: 8 };
 
 type GameStatus = "intro" | "playing" | "won" | "lost";
 type Pulse = { x: number; y: number; born: number; power: number };
@@ -39,7 +40,7 @@ export default function Home() {
   const chargeRef = useRef(STARTING_CHARGE);
   const timeRef = useRef(ROUND_SECONDS);
   const startRef = useRef(0);
-  const cursorRef = useRef({ x: 16, y: 16 });
+  const cursorRef = useRef({ ...START_CURSOR });
   const pulsesRef = useRef<Pulse[]>([]);
   const lastWaveRef = useRef(ROUND_SECONDS);
   const lastSurgeWarningRef = useRef(0);
@@ -121,7 +122,7 @@ export default function Home() {
     lastSurgeWarningRef.current = 0;
     firstPatchProtectedRef.current = true;
     pulsesRef.current = [];
-    cursorRef.current = { x: 16, y: 16 };
+    cursorRef.current = { ...START_CURSOR };
     statusRef.current = "playing";
     setStatus("playing");
     setScore(0);

@@ -41,6 +41,14 @@ test("protects newcomers from one empty first patch", async () => {
   );
 });
 
+test("starts the keyboard cursor away from the protected center", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /const START_CURSOR = \{ x: 8, y: 8 \}/);
+  assert.match(source, /useRef\(\{ \.\.\.START_CURSOR \}\)/);
+  assert.match(source, /cursorRef\.current = \{ \.\.\.START_CURSOR \}/);
+  assert.doesNotMatch(source, /cursorRef\.current = \{ x: 16, y: 16 \}/);
+});
+
 test("announces events without flooding screen readers with live metrics", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);
