@@ -56,6 +56,14 @@ test("announces events without flooding screen readers with live metrics", async
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);
   assert.match(source, /className="status-line"[\s\S]*role="status"[\s\S]*aria-atomic="true"/);
+  assert.match(
+    source,
+    /role="progressbar"[\s\S]*aria-label="Network integrity"[\s\S]*aria-valuenow=\{integrity\}/,
+  );
+  assert.match(
+    source,
+    /role="progressbar"[\s\S]*aria-label="Patch charge"[\s\S]*aria-valuenow=\{Math\.round\(charge\)\}/,
+  );
 });
 
 test("keeps every patch energy-negative before passive regeneration", async () => {

@@ -495,7 +495,14 @@ export default function Home() {
               <span>NETWORK INTEGRITY</span>
               <b>{integrity}%</b>
             </div>
-            <div className="meter-track">
+            <div
+              className="meter-track"
+              role="progressbar"
+              aria-label="Network integrity"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={integrity}
+            >
               <i className="integrity-fill" style={{ width: `${integrity}%` }} />
             </div>
           </div>
@@ -505,7 +512,14 @@ export default function Home() {
               <span>PATCH CHARGE</span>
               <b>{Math.round(charge)}%</b>
             </div>
-            <div className="meter-track">
+            <div
+              className="meter-track"
+              role="progressbar"
+              aria-label="Patch charge"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(charge)}
+            >
               <i className="charge-fill" style={{ width: `${charge}%` }} />
             </div>
             <p className="meter-note">
