@@ -21,7 +21,10 @@ test("warns players before each edge surge", async () => {
 test("explains rejected low-charge patch attempts", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(source, /RECHARGING · \$\{missingCharge\} CHARGE TO GO/);
-  assert.match(source, /RECHARGING · \$\{PATCH_COST - charge\} TO GO/);
+  assert.match(source, /RECHARGING · \$\{Math\.ceil\(PATCH_COST - charge\)\} TO GO/);
+  assert.equal(source.match(/setCharge\(chargeRef\.current\)/g)?.length, 2);
+  assert.doesNotMatch(source, /setCharge\(Math\.round\(chargeRef\.current\)\)/);
+  assert.match(source, /<b>\{Math\.round\(charge\)\}%<\/b>/);
 });
 
 test("does not award points for empty patches", async () => {

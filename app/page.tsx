@@ -183,7 +183,7 @@ export default function Home() {
       const combo = repaired >= 8 ? repaired * 8 : repaired * 4;
       scoreRef.current += repaired > 0 ? 12 + combo : 0;
       pulsesRef.current.push({ x, y, born: performance.now(), power: repaired });
-      setCharge(Math.round(chargeRef.current));
+      setCharge(chargeRef.current);
       setScore(scoreRef.current);
       setFlash(
         repaired >= 12
@@ -276,7 +276,7 @@ export default function Home() {
       );
       const nextIntegrity = Math.round(100 - (corruptedCount / CELLS) * 100);
       setTimeLeft(Math.ceil(remaining));
-      setCharge(Math.round(chargeRef.current));
+      setCharge(chargeRef.current);
       setIntegrity(nextIntegrity);
       setScore(scoreRef.current);
 
@@ -503,7 +503,7 @@ export default function Home() {
           <div className="meter-block">
             <div className="meter-heading">
               <span>PATCH CHARGE</span>
-              <b>{charge}%</b>
+              <b>{Math.round(charge)}%</b>
             </div>
             <div className="meter-track">
               <i className="charge-fill" style={{ width: `${charge}%` }} />
@@ -540,7 +540,7 @@ export default function Home() {
             onClick={() => deployPatch(cursorRef.current.x, cursorRef.current.y)}
           >
             {status === "playing" && charge < PATCH_COST
-              ? `RECHARGING · ${PATCH_COST - charge} TO GO`
+              ? `RECHARGING · ${Math.ceil(PATCH_COST - charge)} TO GO`
               : "PATCH CURSOR"}
           </button>
         </aside>
