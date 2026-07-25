@@ -72,6 +72,16 @@ test("lets touch players drag to aim and release to patch", async () => {
   );
 });
 
+test("previews the exact patch footprint while aiming", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(source, /const patchRadius = \(charge: number\) => \(charge > 72 \? 3 : 2\)/);
+  assert.equal(source.match(/patchRadius\(chargeRef\.current\)/g)?.length, 2);
+  assert.match(
+    source,
+    /statusRef\.current === "playing"[\s\S]*const previewRadius = patchRadius[\s\S]*cell \* \(previewRadius \+ 0\.25\)/,
+  );
+});
+
 test("announces events without flooding screen readers with live metrics", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);

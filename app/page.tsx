@@ -22,6 +22,7 @@ const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
 
 const indexOf = (x: number, y: number) => y * SIZE + x;
+const patchRadius = (charge: number) => (charge > 72 ? 3 : 2);
 
 function randomEdgeCell() {
   const edge = Math.floor(Math.random() * 4);
@@ -144,7 +145,7 @@ export default function Home() {
 
       const grid = gridRef.current;
       let repaired = 0;
-      const radius = chargeRef.current > 72 ? 3 : 2;
+      const radius = patchRadius(chargeRef.current);
       const targets: number[] = [];
       for (let dy = -radius; dy <= radius; dy += 1) {
         for (let dx = -radius; dx <= radius; dx += 1) {
@@ -332,6 +333,20 @@ export default function Home() {
       }
 
       const cursor = cursorRef.current;
+      if (statusRef.current === "playing") {
+        const previewRadius = patchRadius(chargeRef.current);
+        context.beginPath();
+        context.arc(
+          (cursor.x + 0.5) * cell,
+          (cursor.y + 0.5) * cell,
+          cell * (previewRadius + 0.25),
+          0,
+          Math.PI * 2,
+        );
+        context.strokeStyle = "rgba(255, 255, 255, 0.48)";
+        context.lineWidth = Math.max(scale, 1);
+        context.stroke();
+      }
       context.strokeStyle = "#ffffff";
       context.lineWidth = Math.max(1.5 * scale, 2);
       context.strokeRect(
