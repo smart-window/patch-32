@@ -416,7 +416,12 @@ export default function Home() {
           PATCH<span>//32</span>
         </a>
         <p className="topbar-copy">A TINY GAME ABOUT KEEPING SIGNALS ALIVE.</p>
-        <button className="sound-toggle" type="button" onClick={toggleSound}>
+        <button
+          className="sound-toggle"
+          type="button"
+          aria-pressed={soundOn}
+          onClick={toggleSound}
+        >
           SOUND {soundOn ? "ON" : "OFF"}
         </button>
       </header>

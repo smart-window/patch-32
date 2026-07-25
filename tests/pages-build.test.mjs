@@ -64,6 +64,10 @@ test("announces events without flooding screen readers with live metrics", async
     source,
     /role="progressbar"[\s\S]*aria-label="Patch charge"[\s\S]*aria-valuenow=\{Math\.round\(charge\)\}/,
   );
+  assert.match(
+    source,
+    /className="sound-toggle"[\s\S]*aria-pressed=\{soundOn\}[\s\S]*onClick=\{toggleSound\}/,
+  );
 });
 
 test("keeps every patch energy-negative before passive regeneration", async () => {
