@@ -387,7 +387,7 @@ export default function Home() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [deployPatch, startGame]);
 
-  const handlePointer = (event: React.PointerEvent<HTMLCanvasElement>) => {
+  const cursorFromPointer = (event: React.PointerEvent<HTMLCanvasElement>) => {
     const bounds = event.currentTarget.getBoundingClientRect();
     const x = clamp(
       Math.floor(((event.clientX - bounds.left) / bounds.width) * SIZE),
@@ -400,7 +400,45 @@ export default function Home() {
       SIZE - 1,
     );
     cursorRef.current = { x, y };
+    return { x, y };
+  };
+
+  const handlePointerDown = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (!event.isPrimary) return;
+    const { x, y } = cursorFromPointer(event);
+    if (event.pointerType === "touch") {
+      event.currentTarget.setPointerCapture(event.pointerId);
+      return;
+    }
     deployPatch(x, y);
+  };
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (
+      event.isPrimary &&
+      event.pointerType === "touch" &&
+      event.currentTarget.hasPointerCapture(event.pointerId)
+    ) {
+      cursorFromPointer(event);
+    }
+  };
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (
+      !event.isPrimary ||
+      event.pointerType !== "touch" ||
+      !event.currentTarget.hasPointerCapture(event.pointerId)
+    )
+      return;
+    const { x, y } = cursorFromPointer(event);
+    event.currentTarget.releasePointerCapture(event.pointerId);
+    deployPatch(x, y);
+  };
+
+  const handlePointerCancel = (event: React.PointerEvent<HTMLCanvasElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
   };
 
   const toggleSound = () => {
@@ -437,9 +475,12 @@ export default function Home() {
               <canvas
                 ref={canvasRef}
                 className="game-canvas"
-                onPointerDown={handlePointer}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={handlePointerCancel}
                 tabIndex={0}
-                aria-label="32 by 32 game board. Tap corrupted red cells to repair them."
+                aria-label="32 by 32 game board. Tap, or drag and release, on corrupted red cells to repair them."
               />
               {status !== "playing" && (
                 <div className="game-overlay">

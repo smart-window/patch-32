@@ -52,6 +52,26 @@ test("starts the keyboard cursor away from the protected center", async () => {
   assert.doesNotMatch(source, /cursorRef\.current = \{ x: 16, y: 16 \}/);
 });
 
+test("lets touch players drag to aim and release to patch", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  assert.match(
+    source,
+    /handlePointerDown[\s\S]*pointerType === "touch"[\s\S]*setPointerCapture[\s\S]*return;[\s\S]*deployPatch\(x, y\)/,
+  );
+  assert.match(
+    source,
+    /handlePointerMove[\s\S]*hasPointerCapture[\s\S]*cursorFromPointer\(event\)/,
+  );
+  assert.match(
+    source,
+    /handlePointerUp[\s\S]*releasePointerCapture[\s\S]*deployPatch\(x, y\)/,
+  );
+  assert.match(
+    source,
+    /onPointerDown=\{handlePointerDown\}[\s\S]*onPointerMove=\{handlePointerMove\}[\s\S]*onPointerUp=\{handlePointerUp\}/,
+  );
+});
+
 test("announces events without flooding screen readers with live metrics", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(source, /<aside className="control-panel" aria-live=/);
