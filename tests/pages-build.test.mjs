@@ -11,6 +11,13 @@ test("builds a standalone GitHub Pages game", async () => {
   assert.doesNotMatch(html, /chatgpt\.site|codex-preview/i);
 });
 
+test("keeps public player instructions aligned with the live game", async () => {
+  const readme = await readFile(new URL("../README.md", import.meta.url), "utf8");
+  assert.match(readme, /drag to aim and release to patch/);
+  assert.match(readme, /network integrity above 48%/);
+  assert.doesNotMatch(readme, /network integrity above 28%/);
+});
+
 test("warns players before each edge surge", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(source, /SURGE_WARNING_SECONDS = 3/);

@@ -8,9 +8,10 @@ https://smart-window.github.io/patch-32/
 
 ## Controls
 
-- Mouse or touch: select and patch a grid cell.
+- Mouse: click a grid cell to patch it.
+- Touch: tap a grid cell, or drag to aim and release to patch.
 - Keyboard: WASD or arrow keys to move; Space to patch.
-- Survive until the timer reaches zero while keeping network integrity above 28%.
+- Survive until the timer reaches zero while keeping network integrity above 48%.
 
 ## Local development
 
