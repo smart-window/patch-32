@@ -117,5 +117,6 @@ test("uses the isolated 48 percent loss-threshold experiment", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   assert.match(source, /const LOSS_THRESHOLD = 48/);
   assert.match(source, /nextIntegrity <= LOSS_THRESHOLD/);
+  assert.match(source, /NETWORK INTEGRITY · FAIL AT \{LOSS_THRESHOLD\}%/);
   assert.doesNotMatch(source, /below 28%|above 28%|nextIntegrity <= 28/);
 });

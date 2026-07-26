@@ -553,7 +553,7 @@ export default function Home() {
 
           <div className="meter-block">
             <div className="meter-heading">
-              <span>NETWORK INTEGRITY</span>
+              <span>NETWORK INTEGRITY · FAIL AT {LOSS_THRESHOLD}%</span>
               <b>{integrity}%</b>
             </div>
             <div
