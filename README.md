@@ -13,6 +13,12 @@ https://smart-window.github.io/patch-32/
 - Keyboard: WASD or arrow keys to move; Space to patch.
 - Survive until the timer reaches zero while keeping network integrity above 48%.
 
+## Game Designer Mind collaboration
+
+The PATCH32 Game Designer Mind identified a positive-energy dominant strategy, leading to an isolated economy change: starting charge 72 → 52, regeneration 4.8/s → 3.0/s, and refund cap 24 → 10. A later validation round led to the separate 48% loss-threshold test. Its first-action recommendations also informed the empty-first-patch safeguard, off-center keyboard cursor, drag-to-aim touch input, and live patch-footprint preview.
+
+Evidence boundary: the reported archetype results were policy simulations rather than fresh human playtests. The Mind-reported 2,000-seed simulator attachment was not delivered, so those results were not independently reproduced from its claimed artifact.
+
 ## Local development
 
 ```bash

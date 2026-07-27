@@ -16,6 +16,9 @@ test("keeps public player instructions aligned with the live game", async () => 
   assert.match(readme, /drag to aim and release to patch/);
   assert.match(readme, /network integrity above 48%/);
   assert.doesNotMatch(readme, /network integrity above 28%/);
+  assert.match(readme, /starting charge 72 → 52/);
+  assert.match(readme, /policy simulations rather than fresh human playtests/);
+  assert.match(readme, /not independently reproduced from its claimed artifact/);
 });
 
 test("warns players before each edge surge", async () => {
